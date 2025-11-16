@@ -1,0 +1,1028 @@
+﻿@page
+@model IndexModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>GravityChat</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+ * {
+  margin: 0;
+   padding: 0;
+    box-sizing: border-box;
+        }
+
+      :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151932;
+        --bg-tertiary: #1e2341;
+      --accent-cyan: #00f5ff;
+            --accent-purple: #b24bf3;
+     --accent-pink: #ff006e;
+            --accent-green: #00ff88;
+            --text-primary: #ffffff;
+   --text-secondary: #a0a0bb;
+          --glass-bg: rgba(30, 35, 65, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1f3a 50%, var(--bg-secondary) 100%);
+       background-attachment: fixed;
+            color: var(--text-primary);
+     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow-x: hidden;
+        }
+
+        /* Animated background stars */
+        body::before {
+            content: '';
+ position: fixed;
+            top: 0;
+  left: 0;
+       width: 100%;
+            height: 100%;
+        background-image: 
+    radial-gradient(2px 2px at 20px 30px, var(--accent-cyan), transparent),
+                radial-gradient(2px 2px at 60px 70px, var(--accent-purple), transparent),
+radial-gradient(1px 1px at 50px 50px, var(--accent-pink), transparent),
+                radial-gradient(1px 1px at 130px 80px, var(--accent-green), transparent);
+ background-size: 200px 200px;
+   opacity: 0.4;
+            animation: twinkle 4s ease-in-out infinite;
+ pointer-events: none;
+   z-index: 0;
+        }
+
+        @@keyframes twinkle {
+         0%, 100% { opacity: 0.4; }
+         50% { opacity: 0.6; }
+        }
+
+        .app-container {
+            position: relative;
+        width: 100%;
+ min-height: 100vh;
+            padding: 0;
+   z-index: 1;
+        }
+
+   /* Desktop Sidebar */
+        .desktop-sidebar {
+         position: fixed;
+       left: 0;
+       top: 0;
+    width: 280px;
+            height: 100vh;
+            background: var(--glass-bg);
+backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+            padding: 20px 16px;
+    overflow-y: auto;
+            display: none;
+            z-index: 100;
+        }
+
+    /* Mobile Bottom Nav */
+      .mobile-bottom-nav {
+            position: fixed;
+      bottom: 0;
+            left: 0;
+            right: 0;
+  height: 70px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+   border-top: 1px solid var(--glass-border);
+        display: flex;
+            justify-content: space-around;
+      align-items: center;
+          z-index: 1000;
+box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+        .nav-item {
+            flex: 1;
+  display: flex;
+    flex-direction: column;
+       align-items: center;
+   justify-content: center;
+            gap: 4px;
+        cursor: pointer;
+            padding: 8px;
+position: relative;
+            transition: all 0.3s ease;
+      }
+
+        .nav-item i {
+        font-size: 20px;
+  color: var(--text-secondary);
+       transition: all 0.3s ease;
+        }
+
+   .nav-item span {
+            font-size: 11px;
+    color: var(--text-secondary);
+       transition: all 0.3s ease;
+        }
+
+   .nav-item.active i {
+        color: var(--accent-cyan);
+       transform: scale(1.2);
+ }
+
+        .nav-item.active span {
+   color: var(--accent-cyan);
+        }
+
+        .nav-badge {
+      position: absolute;
+            top: 4px;
+       right: 20%;
+            background: var(--accent-pink);
+    color: white;
+          border-radius: 10px;
+   padding: 2px 6px;
+            font-size: 10px;
+font-weight: bold;
+        min-width: 18px;
+  text-align: center;
+      }
+
+   /* Top Header */
+   .top-header {
+  position: fixed;
+            top: 0;
+            left: 0;
+        right: 0;
+   height: 60px;
+   background: var(--glass-bg);
+          backdrop-filter: blur(20px);
+       border-bottom: 1px solid var(--glass-border);
+            display: flex;
+        align-items: center;
+            justify-content: space-between;
+ padding: 0 20px;
+   z-index: 999;
+  }
+
+        .logo {
+  font-size: 22px;
+          font-weight: 800;
+   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+         -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+            background-clip: text;
+ }
+
+        .user-info {
+  display: flex;
+ align-items: center;
+       gap: 10px;
+     }
+
+        .user-avatar {
+            width: 36px;
+         height: 36px;
+        border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            display: flex;
+            align-items: center;
+         justify-content: center;
+     font-size: 16px;
+        }
+
+        .status-dot {
+  width: 8px;
+   height: 8px;
+            border-radius: 50%;
+         background: var(--accent-green);
+          animation: pulse-dot 2s infinite;
+        }
+
+    @@keyframes pulse-dot {
+       0%, 100% { opacity: 1; transform: scale(1); }
+     50% { opacity: 0.7; transform: scale(1.2); }
+      }
+
+        /* Main Content Area */
+        .main-content {
+            padding-top: 60px;
+      padding-bottom: 70px;
+            min-height: 100vh;
+   }
+
+        .view-container {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-container.active {
+  display: block;
+      }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+ }
+
+        /* Map View */
+        #mapView {
+padding: 20px;
+        }
+
+.map-container {
+   background: var(--glass-bg);
+          backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+          border-radius: 24px;
+ padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+    #universeMap {
+width: 100%;
+       height: calc(100vh - 180px);
+ border-radius: 16px;
+         background: radial-gradient(circle at center, rgba(0, 245, 255, 0.05), transparent 70%);
+        }
+
+        /* Chat View */
+        .chat-container {
+display: flex;
+        flex-direction: column;
+            height: calc(100vh - 130px);
+         background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+     border: 1px solid var(--glass-border);
+        border-radius: 24px 24px 0 0;
+     margin: 0;
+            overflow: hidden;
+   }
+
+    .chat-header {
+     padding: 16px 20px;
+            border-bottom: 1px solid var(--glass-border);
+  display: flex;
+      align-items: center;
+    justify-content: space-between;
+  }
+
+        .chat-title {
+  font-size: 18px;
+         font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+         -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+   }
+
+        .chat-messages {
+            flex: 1;
+        overflow-y: auto;
+     padding: 20px;
+            scroll-behavior: smooth;
+    }
+
+ .chat-bubble {
+            max-width: 75%;
+    padding: 12px 16px;
+        border-radius: 20px;
+            margin-bottom: 12px;
+         position: relative;
+     animation: slideIn 0.3s ease;
+        }
+
+        @@keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+     to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-bubble.self {
+      margin-left: auto;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+          color: white;
+        }
+
+   .chat-bubble.other {
+            margin-right: auto;
+     background: var(--bg-tertiary);
+         border: 1px solid var(--glass-border);
+     }
+
+   .chat-meta {
+            font-size: 11px;
+     opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .chat-input-area {
+    padding: 16px 20px;
+       background: var(--bg-tertiary);
+        border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+   flex: 1;
+            background: var(--bg-secondary);
+        border: 1px solid var(--glass-border);
+   border-radius: 24px;
+       padding: 12px 20px;
+            color: var(--text-primary);
+       font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.1);
+  }
+
+        .send-btn {
+            width: 48px;
+      height: 48px;
+      border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+     border: none;
+    color: white;
+    font-size: 18px;
+         display: flex;
+    align-items: center;
+justify-content: center;
+          cursor: pointer;
+         transition: all 0.3s ease;
+ }
+
+.send-btn:hover {
+  transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+   }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            background: var(--glass-bg);
+     backdrop-filter: blur(20px);
+     border: 1px solid var(--glass-border);
+       border-radius: 24px;
+     padding: 20px;
+     margin: 20px;
+            max-height: calc(100vh - 180px);
+         overflow-y: auto;
+        }
+
+        .notification-item {
+ background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+      border-radius: 12px;
+            padding: 12px 16px;
+         margin-bottom: 10px;
+         font-size: 13px;
+            animation: slideIn 0.3s ease;
+        }
+
+        /* Private Chats List */
+        .chats-list {
+            padding: 20px;
+ }
+
+        .chat-list-item {
+  background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        border-radius: 16px;
+   padding: 16px;
+margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+      display: flex;
+  align-items: center;
+            gap: 12px;
+   position: relative;
+        }
+
+        .chat-list-item:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(4px);
+        }
+
+        .chat-list-item .avatar {
+   width: 48px;
+         height: 48px;
+    border-radius: 50%;
+     background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            display: flex;
+align-items: center;
+     justify-content: center;
+      font-size: 20px;
+        }
+
+ .chat-list-item .info {
+   flex: 1;
+        }
+
+        .chat-list-item .name {
+            font-weight: 600;
+       font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .chat-list-item .preview {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+  /* SVG Enhancements */
+  .svg-user {
+       cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+        }
+
+  .svg-user:hover {
+         transform: scale(1.3);
+      filter: drop-shadow(0 8px 16px rgba(0, 245, 255, 0.6));
+  }
+
+        .svg-label {
+  fill: var(--text-primary);
+            font-size: 11px;
+            font-weight: 600;
+         opacity: 0.9;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+     @@keyframes pulse-glow {
+            0%, 100% { 
+           filter: drop-shadow(0 0 8px var(--accent-cyan)) drop-shadow(0 0 12px var(--accent-cyan));
+}
+      50% { 
+    filter: drop-shadow(0 0 16px var(--accent-cyan)) drop-shadow(0 0 24px var(--accent-cyan));
+          }
+        }
+
+.svg-user.self {
+    animation: pulse-glow 2s infinite;
+        }
+
+        /* Desktop Layout */
+        @@media (min-width: 768px) {
+  .mobile-bottom-nav {
+                display: none;
+       }
+
+    .desktop-sidebar {
+     display: block;
+    }
+
+            .main-content {
+  margin-left: 280px;
+   padding-bottom: 0;
+    }
+
+            .top-header {
+        left: 280px;
+    }
+
+            .chat-container {
+            height: calc(100vh - 140px);
+           border-radius: 24px;
+        margin: 20px;
+       }
+
+     #universeMap {
+  height: calc(100vh - 200px);
+            }
+        }
+
+        /* Sidebar Items (Desktop) */
+        .sidebar-section {
+      margin-bottom: 24px;
+ }
+
+        .sidebar-title {
+            font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+            color: var(--text-secondary);
+       margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+    background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+        margin-bottom: 8px;
+         cursor: pointer;
+  transition: all 0.3s ease;
+       display: flex;
+            align-items: center;
+            justify-content: space-between;
+    }
+
+        .sidebar-item:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(4px);
+        }
+
+        .sidebar-item.active {
+        background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(178, 75, 243, 0.1));
+border-color: var(--accent-cyan);
+        }
+
+        /* Scrollbar */
+     ::-webkit-scrollbar {
+            width: 8px;
+     height: 8px;
+ }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+    background: var(--accent-cyan);
+     border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-purple);
+        }
+
+        /* Loading animation */
+    .loading {
+  display: inline-block;
+          width: 8px;
+ height: 8px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+         animation: pulse-dot 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="logo">
+ <i class="fas fa-rocket"></i> GravityChat
+            </div>
+            <div class="user-info">
+          <div class="status-dot"></div>
+     <div class="user-avatar" id="headerAvatar">🧑‍🚀</div>
+         <div style="display:none;" id="headerName"></div>
+         </div>
+        </div>
+
+        <!-- Desktop Sidebar -->
+        <div class="desktop-sidebar">
+     <div class="sidebar-section">
+  <div class="sidebar-title">Navigation</div>
+      <div class="sidebar-item active" data-view="map">
+   <span><i class="fas fa-map"></i> Cluster Map</span>
+    <span class="nav-badge" id="mapBadgeDesktop" style="display:none; position:static;"></span>
+      </div>
+         <div class="sidebar-item" data-view="cluster">
+        <span><i class="fas fa-comments"></i> Cluster Chat</span>
+       <span class="nav-badge" id="clusterBadgeDesktop" style="display:none; position:static;"></span>
+    </div>
+   </div>
+
+            <div class="sidebar-section">
+    <div class="sidebar-title">Private Chats</div>
+   <div id="privateListDesktop"></div>
+         </div>
+
+       <div class="sidebar-section">
+                <div class="sidebar-title">Notifications</div>
+ <div id="notificationListDesktop" style="max-height: 200px; overflow-y: auto;"></div>
+       </div>
+        </div>
+
+        <!-- Main Content -->
+   <div class="main-content">
+            <!-- Map View -->
+            <div id="mapView" class="view-container active">
+    <div class="map-container">
+    <svg id="universeMap" viewBox="0 0 400 400">
+           <defs>
+    <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+          <feMergeNode in="coloredBlur"/>
+  <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+      </filter>
+           </defs>
+           </svg>
+                </div>
+            </div>
+
+        <!-- Cluster Chat View -->
+     <div id="clusterChatView" class="view-container">
+ <div class="chat-container">
+       <div class="chat-header">
+       <div>
+     <div class="chat-title">Cluster Chat</div>
+         <div style="font-size: 11px; color: var(--text-secondary);">
+         Cluster: <span id="clusterIdLabel">-</span>
+   </div>
+           </div>
+        <button class="send-btn" style="width:auto; padding: 8px 16px; border-radius: 20px;" onclick="switchView('map')">
+     <i class="fas fa-map"></i>
+            </button>
+     </div>
+      <div class="chat-messages" id="clusterMessages"></div>
+        <div class="chat-input-area">
+         <input type="text" class="chat-input" id="clusterInput" placeholder="Type your message..." />
+    <button class="send-btn" id="clusterSend">
+  <i class="fas fa-paper-plane"></i>
+     </button>
+               </div>
+   </div>
+    </div>
+
+   <!-- Private Chats View -->
+   <div id="privateChatsView" class="view-container">
+           <div class="chats-list" id="privateList"></div>
+        </div>
+
+            <!-- Notifications View -->
+       <div id="notificationsView" class="view-container">
+ <div class="notifications-panel" id="notificationList"></div>
+            </div>
+
+    <!-- Private Chat Modal -->
+            <div id="privateChatView" class="view-container">
+         <div class="chat-container">
+      <div class="chat-header">
+   <div>
+  <div class="chat-title" id="privateChatTitle">Private Chat</div>
+         </div>
+             <button class="send-btn" style="width:auto; padding: 8px 16px; border-radius: 20px;" id="privateClose">
+   <i class="fas fa-times"></i>
+  </button>
+         </div>
+          <div class="chat-messages" id="privateChatMessages"></div>
+           <div class="chat-input-area">
+    <input type="text" class="chat-input" id="privateInput" placeholder="Type your message..." />
+           <button class="send-btn" id="privateSend">
+      <i class="fas fa-paper-plane"></i>
+               </button>
+ </div>
+             </div>
+      </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <div class="mobile-bottom-nav">
+            <div class="nav-item active" data-view="map">
+        <i class="fas fa-map"></i>
+    <span>Map</span>
+        <span class="nav-badge" id="mapBadgeMobile" style="display:none;"></span>
+            </div>
+      <div class="nav-item" data-view="cluster">
+        <i class="fas fa-comments"></i>
+    <span>Cluster</span>
+       <span class="nav-badge" id="clusterBadgeMobile" style="display:none;"></span>
+  </div>
+   <div class="nav-item" data-view="private">
+         <i class="fas fa-user-friends"></i>
+     <span>Chats</span>
+           <span class="nav-badge" id="privateBadgeMobile" style="display:none;"></span>
+ </div>
+     <div class="nav-item" data-view="notifications">
+       <i class="fas fa-bell"></i>
+            <span>Alerts</span>
+        <span class="nav-badge" id="notificationBadgeMobile" style="display:none;"></span>
+         </div>
+ </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+         .withUrl("/gravityHub")
+       .build();
+
+        let selfId = null;
+      let selfName = "";
+   let currentCluster = "";
+        let privateChatTarget = null;
+        let privateChatTargetName = "";
+
+        const privateConversations = {};
+        const unreadCounts = {};
+     const contactNames = {};
+
+        const svg = document.getElementById("universeMap");
+
+        // View Switching
+        function switchView(viewName) {
+document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+ document.querySelectorAll('.nav-item, .sidebar-item').forEach(n => n.classList.remove('active'));
+
+   if (viewName === 'map') {
+  document.getElementById('mapView').classList.add('active');
+     } else if (viewName === 'cluster') {
+                document.getElementById('clusterChatView').classList.add('active');
+       } else if (viewName === 'private') {
+      document.getElementById('privateChatsView').classList.add('active');
+            } else if (viewName === 'notifications') {
+    document.getElementById('notificationsView').classList.add('active');
+            } else if (viewName === 'privateChat') {
+ document.getElementById('privateChatView').classList.add('active');
+        }
+
+    document.querySelectorAll(`[data-view="${viewName}"]`).forEach(el => el.classList.add('active'));
+        }
+
+        // Setup nav listeners
+        document.querySelectorAll('.nav-item, .sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+  const view = e.currentTarget.getAttribute('data-view');
+     if (view) switchView(view);
+  });
+        });
+
+        function renderPrivateList() {
+      const containers = [document.getElementById('privateList'), document.getElementById('privateListDesktop')];
+   const ids = Object.keys(privateConversations).filter(id => id !== selfId).sort((a, b) => (contactNames[a] || a).localeCompare(contactNames[b] || b));
+
+   containers.forEach(container => {
+    if (!container) return;
+    container.innerHTML = '';
+       ids.forEach(id => {
+      const conv = privateConversations[id];
+                const name = contactNames[id] || (conv && conv.length ? conv[conv.length - 1].senderName : id) || id;
+
+      const el = document.createElement('div');
+     el.className = container.id === 'privateListDesktop' ? 'sidebar-item' : 'chat-list-item';
+ el.innerHTML = container.id === 'privateListDesktop' 
+             ? `<span><i class="fas fa-user"></i> ${name}</span><span class='nav-badge' style='display:${unreadCounts[id] ? 'inline-flex' : 'none'}; position:static;'>${unreadCounts[id] || ''}</span>`
+             : `<div class="avatar">${generateEmojiForName(name)}</div><div class="info"><div class="name">${name}</div><div class="preview">${unreadCounts[id] ? unreadCounts[id] + ' unread' : 'No new messages'}</div></div>${unreadCounts[id] ? '<span class="nav-badge" style="position:absolute; right:16px;">' + unreadCounts[id] + '</span>' : ''}`;
+         el.onclick = () => openPrivateChatFromList(id, name);
+     container.appendChild(el);
+      });
+    });
+
+            // Update badges
+ const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
+     ['privateBadgeMobile'].forEach(id => {
+      const badge = document.getElementById(id);
+    if (badge) {
+           badge.style.display = totalUnread > 0 ? 'inline-flex' : 'none';
+              badge.textContent = totalUnread;
+              }
+     });
+    }
+
+        function openPrivateChatFromList(id, name) {
+         privateChatTarget = id;
+          privateChatTargetName = name;
+      document.getElementById('privateChatTitle').innerText = name;
+  switchView('privateChat');
+            unreadCounts[id] = 0;
+ renderPrivateList();
+     const box = document.getElementById('privateChatMessages');
+   box.innerHTML = '';
+      const conv = privateConversations[id] || [];
+  conv.forEach(m => appendPrivateMessageToBox(m, box));
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function appendPrivateMessageToBox(m, box) {
+            const div = document.createElement('div');
+            div.classList.add('chat-bubble');
+   div.classList.add(m.isSelf ? 'self' : 'other');
+         div.innerHTML = `<div class='chat-meta'>${m.isSelf ? 'You' : m.senderName}</div><div>${m.message}</div>`;
+          box.appendChild(div);
+        }
+
+    function drawUniverse(members) {
+    svg.innerHTML = '';
+          if (members.length > 0) {
+    const xs = members.map(m => m.x);
+   const ys = members.map(m => m.y);
+      const minX = Math.min(...xs) - 100;
+   const maxX = Math.max(...xs) + 100;
+              const minY = Math.min(...ys) - 100;
+            const maxY = Math.max(...ys) + 100;
+        const width = Math.max(400, maxX - minX);
+      const height = Math.max(400, maxY - minY);
+      svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+  }
+
+      if (!document.getElementById('selfGrad')) {
+          const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  defs.innerHTML = `
+               <radialGradient id='selfGrad' cx='50%' cy='40%'>
+   <stop offset='0%' stop-color='#00f5ff'/>
+          <stop offset='100%' stop-color='#b24bf3'/>
+</radialGradient>
+            <radialGradient id='otherGrad' cx='50%' cy='40%'>
+              <stop offset='0%' stop-color='#9feaff'/>
+   <stop offset='100%' stop-color='#00bcd4'/>
+  </radialGradient>`;
+                svg.appendChild(defs);
+            }
+
+        members.forEach(m => {
+    contactNames[m.id] = m.name;
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.classList.add('svg-user');
+    if (m.id === selfId) g.classList.add('self');
+      g.setAttribute('data-id', m.id);
+
+         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+ circle.setAttribute('cx', m.x);
+                circle.setAttribute('cy', m.y);
+       circle.setAttribute('r', m.id === selfId ? 16 : 12);
+          circle.setAttribute('fill', m.id === selfId ? 'url(#selfGrad)' : 'url(#otherGrad)');
+         circle.setAttribute('stroke', '#ffffff');
+      circle.setAttribute('stroke-width', '2');
+
+ const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+     icon.setAttribute('x', m.x);
+    icon.setAttribute('y', m.y + 5);
+       icon.setAttribute('text-anchor', 'middle');
+        icon.setAttribute('font-size', m.id === selfId ? '14' : '12');
+  icon.textContent = generateEmojiForName(m.name);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          label.setAttribute('x', m.x + (m.id === selfId ? 24 : 20));
+             label.setAttribute('y', m.y - 14);
+         label.setAttribute('class', 'svg-label');
+             label.textContent = m.name;
+
+                g.appendChild(circle);
+     g.appendChild(icon);
+                g.appendChild(label);
+     g.addEventListener('click', () => { if (m.id !== selfId) openPrivateChatFromListWithAutoCreate(m); });
+    svg.appendChild(g);
+      });
+
+   renderPrivateList();
+        }
+
+        function generateEmojiForName(name) {
+ const emojis = ['🧑‍🚀', '👽', '🦊', '🐼', '🐵', '🦄', '🤖', '👾', '🕶️', '🔥', '🌟', '🍕', '🌪️', '🎮', '🎯', '🎪', '🎨'];
+            if (!name) return '👤';
+            let h = 0;
+            for (let i = 0; i < name.length; i++) h = (h << 5) - h + name.charCodeAt(i);
+      h = Math.abs(h);
+    return emojis[h % emojis.length];
+        }
+
+        function openPrivateChatFromListWithAutoCreate(m) {
+     if (!privateConversations[m.id]) privateConversations[m.id] = [];
+            if (!unreadCounts[m.id]) unreadCounts[m.id] = 0;
+   contactNames[m.id] = m.name || contactNames[m.id] || m.id;
+     renderPrivateList();
+   openPrivateChatFromList(m.id, contactNames[m.id]);
+        }
+
+        document.getElementById('privateClose').onclick = () => {
+            switchView(window.innerWidth >= 768 ? 'map' : 'private');
+     };
+
+        connection.start().then(() => {
+       console.log('Connected to GravityChat');
+    }).catch(err => console.error(err));
+
+        connection.on('UniverseInit', (data) => {
+        selfId = data.connectionId;
+     selfName = data.userName;
+    currentCluster = data.clusterId;
+      document.getElementById('headerName').innerText = selfName;
+            document.getElementById('headerAvatar').innerText = generateEmojiForName(selfName);
+            document.getElementById('clusterIdLabel').innerText = currentCluster.substring(0, 8);
+       if (!privateConversations[selfId]) privateConversations[selfId] = [];
+            contactNames[selfId] = selfName;
+         renderPrivateList();
+        });
+
+        connection.on('ClusterUpdate', (members) => {
+            drawUniverse(members);
+    members.forEach(m => {
+        if (!privateConversations[m.id]) {
+      privateConversations[m.id] = [];
+         unreadCounts[m.id] = 0;
+   }
+            contactNames[m.id] = m.name;
+            });
+            renderPrivateList();
+     });
+
+        connection.on('ClusterNotification', (data) => {
+    const lists = [document.getElementById('notificationList'), document.getElementById('notificationListDesktop')];
+     lists.forEach(list => {
+        if (!list) return;
+                const el = document.createElement('div');
+    el.className = 'notification-item';
+  el.innerHTML = `<i class="fas fa-${data.type === 'join' ? 'sign-in-alt' : 'sign-out-alt'}"></i> ${data.name || data.id} ${data.type === 'join' ? 'joined' : 'left'} your cluster`;
+         list.prepend(el);
+    });
+        });
+
+document.getElementById('clusterSend').onclick = () => {
+    const msg = document.getElementById('clusterInput').value.trim();
+         if (!msg) return;
+            connection.invoke('SendClusterMessage', currentCluster, msg).catch(err => console.error(err));
+    document.getElementById('clusterInput').value = '';
+        };
+
+        document.getElementById('clusterInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('clusterSend').click();
+        });
+
+        connection.on('ReceiveClusterMessage', (data) => {
+  const box = document.getElementById('clusterMessages');
+            const div = document.createElement('div');
+   div.classList.add('chat-bubble');
+         div.classList.add(data.senderId === selfId ? 'self' : 'other');
+        div.innerHTML = `<div class="chat-meta">${data.senderId === selfId ? 'You' : data.senderName}</div><div>${data.message}</div>`;
+    box.appendChild(div);
+          box.scrollTop = box.scrollHeight;
+
+        ['clusterBadgeMobile', 'clusterBadgeDesktop'].forEach(id => {
+     const badge = document.getElementById(id);
+       if (badge) {
+        badge.style.display = 'inline-flex';
+         badge.textContent = '•';
+      }
+   });
+        });
+
+ document.getElementById('privateSend').onclick = () => {
+       const msg = document.getElementById('privateInput').value.trim();
+        if (!msg || !privateChatTarget) return;
+ connection.invoke('SendPrivateMessage', privateChatTarget, msg).catch(err => console.error(err));
+            document.getElementById('privateInput').value = '';
+        };
+
+      document.getElementById('privateInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('privateSend').click();
+        });
+
+      connection.on('ReceivePrivateMessage', (data) => {
+   if (data && data.echo && data.recipientId) {
+    if (!privateConversations[data.recipientId]) privateConversations[data.recipientId] = [];
+       const m = { senderId: selfId, senderName: selfName, message: data.message, isSelf: true };
+                privateConversations[data.recipientId].push(m);
+         if (privateChatTarget === data.recipientId) {
+          appendPrivateMessageToBox(m, document.getElementById('privateChatMessages'));
+           document.getElementById('privateChatMessages').scrollTop = document.getElementById('privateChatMessages').scrollHeight;
+      }
+      return;
+       }
+
+  const senderId = data.senderId;
+            const senderName = data.senderName;
+   const message = data.message;
+
+       if (!privateConversations[senderId]) privateConversations[senderId] = [];
+            contactNames[senderId] = senderName || contactNames[senderId];
+
+  const m = { senderId, senderName, message, isSelf: (senderId === selfId) };
+          privateConversations[senderId].push(m);
+
+         if (privateChatTarget === senderId) {
+   appendPrivateMessageToBox(m, document.getElementById('privateChatMessages'));
+   document.getElementById('privateChatMessages').scrollTop = document.getElementById('privateChatMessages').scrollHeight;
+   } else if (senderId !== selfId) {
+         unreadCounts[senderId] = (unreadCounts[senderId] || 0) + 1;
+   const lists = [document.getElementById('notificationList'), document.getElementById('notificationListDesktop')];
+     lists.forEach(list => {
+   if (!list) return;
+   const el = document.createElement('div');
+   el.className = 'notification-item';
+        el.innerHTML = `<i class="fas fa-envelope"></i> <strong>${senderName}</strong>: ${message}`;
+ list.prepend(el);
+    });
+      renderPrivateList();
+            }
+});
+
+  connection.on('PrivateNotification', (data) => {
+            if (!privateConversations[data.senderId]) privateConversations[data.senderId] = [];
+         if (data.senderId !== selfId) {
+       unreadCounts[data.senderId] = (unreadCounts[data.senderId] || 0) + 1;
+      }
+      renderPrivateList();
+        });
+    </script>
+</body>
+</html>
